@@ -1,17 +1,31 @@
 //your JS code here. If required.
-function moveNext(input) {
-    let next = input.nextElementSibling;
-    if (input.value && next) {
-        next.focus();
-    }
-}
+document.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll(".code");
 
-function handleBackspace(input) {
-    if (event.key === "Backspace" && !input.value) {
-        let prev = input.previousElementSibling;
-        if (prev) {
-            prev.focus();
-            prev.value = "";
-        }
-    }
-}
+    inputs.forEach((input, index) => {
+        input.addEventListener("input", (e) => {
+            // Allow only numbers
+            if (!/^\d$/.test(e.data)) {
+                input.value = "";
+                return;
+            }
+
+            // Move to next input if available
+            if (input.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+
+            // Auto-submit when all fields are filled
+            if ([...inputs].every((inp) => inp.value !== "")) {
+                console.log("OTP entered:", [...inputs].map(inp => inp.value).join(""));
+                // You can trigger an API request here
+            }
+        });
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && !input.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+    });
+});
